@@ -20,8 +20,12 @@ import java.util.List;
 @ActiveProfiles("jpadao")
 public class CustomerServiceJpaDaoImplTest {
 
-    @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    public void setCustomerService(CustomerService customerService) {
+        this.customerService = customerService;
+    }
 
     @Test
     public void testList() throws Exception {
