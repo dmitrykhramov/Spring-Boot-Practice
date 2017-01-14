@@ -5,6 +5,7 @@ import com.dmitrykhramov.spring.converters.ProductFormToProduct;
 import com.dmitrykhramov.spring.domain.Product;
 import com.dmitrykhramov.spring.repositories.ProductRepository;
 import com.dmitrykhramov.spring.services.ProductService;
+import com.dmitrykhramov.spring.services.jms.SendTextMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class ProductServiceRepoImpl implements ProductService {
 
     private ProductRepository productRepository;
     private ProductFormToProduct productFormToProduct;
+    private SendTextMessageService sendTextMessageService;
 
     @Autowired
     public void setProductRepository(ProductRepository productRepository) {
@@ -32,15 +34,26 @@ public class ProductServiceRepoImpl implements ProductService {
     public void setProductFormToProduct(ProductFormToProduct productFormToProduct) {
         this.productFormToProduct = productFormToProduct;
     }
+
+    @Autowired
+    public void setSendTextMessageService(SendTextMessageService sendTextMessageService) {
+        this.sendTextMessageService = sendTextMessageService;
+    }
+
     @Override
     public List<?> listAll() {
+
+        sendTextMessageService.sendTextMessage("Listing Products");
+
         List<Product> products = new ArrayList<>();
-        productRepository.findAll().forEach(products::add);
+        productRepository.findAll().forEach(products::add); //fun with Java 8
         return products;
     }
 
     @Override
     public Product getById(Integer id) {
+        sendTextMessageService.sendTextMessage("Requested Product ID: " + id);
+
         return productRepository.findOne(id);
     }
 
